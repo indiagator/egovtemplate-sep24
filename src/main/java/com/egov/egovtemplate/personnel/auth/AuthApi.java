@@ -1,6 +1,7 @@
 package com.egov.egovtemplate.personnel.auth;
 
 
+import com.egov.egovtemplate.CredentialLookupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -14,16 +15,26 @@ public class AuthApi
     @Autowired
     private CredentialRepository credentialRepository;
 
+    @Autowired
+    CredentialLookupService credentialLookupService;
+
    // @Autowired
    // @Qualifier("dummycredential")
-    //Credential dummyCredential;
+    Credential dummyCredential;
+
+    AuthApi(Credential credential)
+    {
+        this.dummyCredential = credential;
+    }
 
     @PostMapping("/signup")
     public String signup(@RequestParam("username") String username,
                          @RequestParam("password") String password
                          )
     {
-        Credential credential = new Credential();
+        Credential credential = credentialLookupService.getDummyCredential();
+
+        //Credential credential = new Credential(); // USING THE NEW KEYWORD WITH LIMITED SCOPE IS NOT SUCH A BAD THINGS
         credential.setId(java.util.UUID.randomUUID());
         credential.setUsername(username);
         credential.setPassword(password);

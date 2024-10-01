@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class AppConfig {
 
-    @Bean("dummycredential")
+    @Bean
     @Scope("prototype")
-    public Credential generateDummyCredential() {
+    public Credential DummyCredential() {
         Credential credential = new Credential();
         credential.setId(java.util.UUID.randomUUID());
         credential.setPassword("dummyPassword");
