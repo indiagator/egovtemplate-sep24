@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBT Platform - Dashboard</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4>Welcome to EGOV Platform</h4>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Personal Details</h5>
+          <p class="card-text">
+            <strong>Username:</strong> <span th:text="${username}" id="username">&nbsp;</span><br>
+            <strong>First Name:</strong> <span id="firstName">&nbsp;</span><br>
+            <strong>Last Name:</strong> <span id="lastName">&nbsp;</span><br>
+            <strong>Phone:</strong> <span id="phone">/&nbsp;</span><br>
+            <strong>Email:</strong> <span id="email">&nbsp;</span><br>
+            <strong>City:</strong> <span id="city">&nbsp;</span><br>
+            <strong>Country:</strong> <span id="country">&nbsp;</span><br>
+          </p>
+        </div>
+      </div>
+      <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+          <h4>Update Personal Details</h4>
+        </div>
+        <div class="card-body">
+          <form id="updateForm">
+            <div class="form-group">
+              <label for="firstNameInput">First Name</label>
+              <input type="text" class="form-control" id="firstNameInput" placeholder="Enter first name">
+            </div>
+            <div class="form-group">
+              <label for="lastNameInput">Last Name</label>
+              <input type="text" class="form-control" id="lastNameInput" placeholder="Enter last name">
+            </div>
+            <div class="form-group">
+              <label for="phoneInput">Phone</label>
+              <input type="text" class="form-control" id="phoneInput" placeholder="Enter phone number">
+            </div>
+            <div class="form-group">
+              <label for="emailInput">Email</label>
+              <input type="email" class="form-control" id="emailInput" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+              <label for="cityInput">City</label>
+              <input type="text" class="form-control" id="cityInput" placeholder="Enter city">
+            </div>
+            <div class="form-group">
+              <label for="countryInput">Country</label>
+              <input type="text" class="form-control" id="countryInput" placeholder="Enter country">
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Replace with actual user data
+  const userData = {
+    fname: 'John',
+    lname: 'Doe',
+    phone: '+1 234 567 890',
+    email: 'john.doe@example.com',
+    city: 'New York',
+    country: 'USA',
+    username: 'dummyuser'
+  };
+
+  // Populate user data in the HTML
+  document.getElementById('firstName').textContent = userData.firstName;
+  document.getElementById('lastName').textContent = userData.lastName;
+  document.getElementById('phone').textContent = userData.phone;
+  document.getElementById('email').textContent = userData.email;
+  document.getElementById('city').textContent = userData.city;
+  document.getElementById('country').textContent = userData.country;
+
+  // Handle form submission
+  const form = document.getElementById('updateForm');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form submission
+
+    // Update user data with form values
+    userData.fname = document.getElementById('firstNameInput').value;
+    userData.lname = document.getElementById('lastNameInput').value;
+    userData.phone = document.getElementById('phoneInput').value;
+    userData.email = document.getElementById('emailInput').value;
+    userData.city = document.getElementById('cityInput').value;
+    userData.country = document.getElementById('countryInput').value;
+    userData.username = document.getElementById('username').value;
+
+    const url = '/api/v1/update/user/details'; // Replace with your backend URL
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // Request successful
+          console.log('Data sent successfully');
+          // Handle successful response from the backend
+          const response = JSON.parse(xhr.responseText);
+          // Do something with the response data
+          console.log(response);
+        } else {
+          // Request failed
+          console.error('Error sending data');
+          // Handle error response from the backend
+          const error = JSON.parse(xhr.responseText);
+          console.error(error);
+        }
+      }
+    };
+
+
+    xhr.send(JSON.stringify(userData));
+
+
+    // Update the displayed user data
+    document.getElementById('firstName').textContent = userData.fname;
+    document.getElementById('lastName').textContent = userData.lname;
+    document.getElementById('phone').textContent = userData.phone;
+    document.getElementById('email').textContent = userData.email;
+    document.getElementById('city').textContent = userData.city;
+    document.getElementById('country').textContent = userData.country;
+
+
+
+    // Clear form inputs
+    form.reset();
+  });
+</script>
+</body>
+</html>
