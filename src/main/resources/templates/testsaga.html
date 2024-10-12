@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Testing Saga</title>
+  <script>
+    let pollingInterval;
+
+    function startPolling() {
+      document.getElementById('status').textContent = 'Polling started...';
+      document.getElementById('startButton').disabled = true;
+      pollingInterval = setInterval(pollServer, 5000); // Poll every 5 seconds
+    }
+
+    function pollServer() {
+      fetch('/api/ops/v1/status', {
+        method: 'GET',
+        credentials: 'same-origin' // This ensures cookies are sent with the request
+      })
+              .then(response => response.json())
+              .then(data => {
+                document.getElementById('status').textContent = 'Status: ' + data.status;
+
+                if (data.status === 'failed' || data.status === 'SAGA-COMPLETE') {
+                  stopPollingAndInvalidateCookies();
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = 'Error occurred while polling';
+                stopPollingAndInvalidateCookies();
+              });
+    }
+
+    function stopPollingAndInvalidateCookies() {
+      clearInterval(pollingInterval);
+      document.getElementById('startButton').disabled = false;
+
+      // Invalidate all cookies
+
+        document.cookie = "ss1=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+        document.cookie = "ss2=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=" + window.location.hostname;
+        document.cookie = "ss3=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=." + window.location.hostname;
+
+
+      console.log('All cookies have been invalidated');
+    }
+  </script>
+</head>
+
+<body>
+<h1>Saga Status Checker</h1>
+<button id="startButton" onclick="startPolling()">Start Polling</button>
+<p id="status">Not started</p>
+</body>
+
+</html>
